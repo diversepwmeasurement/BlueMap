@@ -1,26 +1,25 @@
-name: Check translations
-
-on:
-  push:
-    paths:
-      - "BlueMapCommon/webapp/public/lang/**"
-      - ".github/translation-checker/**"
-
-permissions:
-  contents: read
-
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: Install deps
-        working-directory: .github/translation-checker
-        run: npm ci
-      - name: Run Translation Checker
-        working-directory: .github/translation-checker
-        run: npm start
+    - continue-on-error: true
+      name: Checkout
+      uses: actions/checkout@v3
+    - continue-on-error: true
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18
+    - continue-on-error: true
+      name: Install deps
+      run: npm ci
+      working-directory: .github/translation-checker
+    - continue-on-error: true
+      name: Run Translation Checker
+      run: npm start
+      working-directory: .github/translation-checker
+name: Check translations
+on:
+  repository_dispatch:
+    types: trigger-ga___translation-checker.yml
+permissions:
+  contents: read

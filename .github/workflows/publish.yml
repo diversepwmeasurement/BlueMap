@@ -1,29 +1,30 @@
-name: Publish
-
-on:
-  workflow_dispatch:
-  push:
-    tags:
-      - "**"
-
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v3
-        with:
-          submodules: recursive
-          fetch-depth: 0 # needed for versioning
-      - name: Set up Java
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: |
-            16
-            17
-          cache: 'gradle'
-      - name: Build with Gradle
-        run: ./gradlew clean :BlueMapCore:publish :BlueMapCommon:publish
-        env:
-          BLUECOLORED_USERNAME: ${{ secrets.BLUECOLORED_USERNAME }}
-          BLUECOLORED_PASSWORD: ${{ secrets.BLUECOLORED_PASSWORD }}
+    - continue-on-error: true
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        submodules: recursive
+    - continue-on-error: true
+      name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        cache: gradle
+        distribution: temurin
+        java-version: '16
+
+          17
+
+          '
+    - continue-on-error: true
+      env:
+        BLUECOLORED_PASSWORD: ${{ secrets.BLUECOLORED_PASSWORD }}
+        BLUECOLORED_USERNAME: ${{ secrets.BLUECOLORED_USERNAME }}
+      name: Build with Gradle
+      run: ./gradlew clean :BlueMapCore:publish :BlueMapCommon:publish
+name: Publish
+on:
+  repository_dispatch:
+    types: trigger-ga___publish.yml
